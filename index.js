@@ -60,15 +60,17 @@ parser.addArgument(
 );
 
 
-var args = parser.parseArgs();
+var args = parser.parseArgs(),
+    api_index = 0;
 console.log(args)
-var api_index = 0
+
+
 var record_data = function(req, serverResData) {
     api_index += 1
-    var fileSavePath = path.resolve(args.save)
-    var reqFile = path.join(fileSavePath, api_index + 'requestData.txt')
-    var respFile = path.join(fileSavePath, api_index + 'responseData.txt')
-    var reqData
+    var fileSavePath = path.resolve(args.save),
+        reqFile = path.join(fileSavePath, api_index + 'requestData.txt'),
+        respFile = path.join(fileSavePath, api_index + 'responseData.txt'),
+        reqData
     if (/http/.test(req.url)) {
         reqData = url.parse(req.url)
     } else {
@@ -91,7 +93,7 @@ var record_data = function(req, serverResData) {
             return console.error(err);
         }
     });
-}
+};
 
 var gen_mock = function(mockResData, mock_fields, increase_fields, reduce_fields) {
     mockResData = JSON.parse(mockResData.toString('utf-8'))
@@ -101,26 +103,25 @@ var gen_mock = function(mockResData, mock_fields, increase_fields, reduce_fields
     console.log('--------------原始值-----------------')
     console.log(mockResData)
     for (var mock_field of mock_fields) {
-        var seperate_index = mock_field.indexOf('=');
-        var key = mock_field.substring(0, seperate_index);
-        var mock_value = mock_field.substring(seperate_index + 1)
-        var ret_value = jp.apply(mockResData, key, function(value) {
+        var seperate_index = mock_field.indexOf('='),
+            key = mock_field.substring(0, seperate_index),
+            mock_value = mock_field.substring(seperate_index + 1);
+        jp.apply(mockResData, key, function(value) {
             return mock_value;
         });
     }
     for (var increase_field of increase_fields) {
-        var seperate_index = increase_field.indexOf('=')
-        var key = increase_field.substring(0,seperate_index)
-        var mock_value = increase_field.substring(seperate_index + 1)
-        var ret_value = jp.value(mockResData,key,mock_value)
+        var seperate_index = increase_field.indexOf('='),
+            key = increase_field.substring(0, seperate_index),
+            mock_value = increase_field.substring(seperate_index + 1);
+        jp.value(mockResData, key, mock_value)
     }
 
     for (var reduce_field of reduce_fields) {
-        var paths = jp.paths(mockResData,reduce_field)
-        console.log(paths)
+        var paths = jp.paths(mockResData, reduce_field)
         for (var path of paths) {
             path.shift()
-            lo.unset(mockResData,path)
+            lo.unset(mockResData, path)
         }
     }
     console.log('--------------mock值-----------------')
@@ -141,10 +142,10 @@ var fuzzy_rule = {
 
     replaceServerResDataAsync: function(req, res, serverResData, callback) {
         if (/json/i.test(res.headers['content-type'])) {
-            var mockResData = serverResData
-            var mock_fields = args.mock ? args.mock : []
-            var increase_fields = args.increase ? args.increase : []
-            var reduce_fields = args.reduce ? args.reduce : []
+            var mockResData = serverResData,
+                mock_fields = args.mock ? args.mock : [],
+                increase_fields = args.increase ? args.increase : [],
+                reduce_fields = args.reduce ? args.reduce : [];
 
             if (args.api === null) {
                 // callback(serverResData)
@@ -153,12 +154,12 @@ var fuzzy_rule = {
                     try {
                         mockResData = gen_mock(mockResData, mock_fields, increase_fields, reduce_fields)
                         callback(JSON.stringify(mockResData))
-                    }catch(e) {
+                    } catch (e) {
                         console.log('mock出现错误，返回原始数据')
                         callback(serverResData)
                     }
                 }
-            }else {
+            } else {
                 console.log('指定了规则，也指定了api')
                 var find_flag = false
                 for (var api of args.api) {
@@ -173,11 +174,11 @@ var fuzzy_rule = {
                         console.log('指定的api命中！！！ 返回mock数据')
                         mockResData = gen_mock(mockResData, mock_fields, increase_fields, reduce_fields)
                         callback(JSON.stringify(mockResData))
-                    }catch(e) {
+                    } catch (e) {
                         console.log('mock出现错误，返回原始数据')
                         callback(serverResData)
                     }
-                }else {
+                } else {
                     console.log('指定的api没有命中，返回原始数据')
                     callback(serverResData)
                 }
@@ -192,7 +193,7 @@ var options = {
     rule: fuzzy_rule,
     disableWebInterface: true,
     port: args.port
-    // silent: true
+        // silent: true
 }
 if (args.mock === null && args.increase === null && args.reduce === null) {
     delete options.rule
