@@ -94,7 +94,7 @@ var record_data = function(req, serverResData) {
 }
 
 var gen_mock = function(mockResData, mock_fields, increase_fields, reduce_fields) {
-    mockResData = JSON.parse(mockResData.toString())
+    mockResData = JSON.parse(mockResData.toString('utf-8'))
     console.log(mock_fields)
     console.log(increase_fields)
     console.log(reduce_fields)
@@ -150,8 +150,13 @@ var fuzzy_rule = {
                 // callback(serverResData)
                 console.log('指定了规则，但是没有指定api，暴力mock')
                 if (serverResData.toString() != '') {
-                    mockResData = gen_mock(mockResData, mock_fields, increase_fields, reduce_fields)
-                    callback(JSON.stringify(mockResData))
+                    try {
+                        mockResData = gen_mock(mockResData, mock_fields, increase_fields, reduce_fields)
+                        callback(JSON.stringify(mockResData))
+                    }catch(e) {
+                        console.log('mock出现错误，返回原始数据')
+                        callback(serverResData)
+                    }
                 }
             }else {
                 console.log('指定了规则，也指定了api')
@@ -163,10 +168,15 @@ var fuzzy_rule = {
                     }
                 }
                 if (find_flag && serverResData.toString() != '') {
-                    record_data(req, serverResData)
-                    console.log('指定的api命中！！！ 返回mock数据')
-                    mockResData = gen_mock(mockResData, mock_fields, increase_fields, reduce_fields)
-                    callback(JSON.stringify(mockResData))
+                    try {
+                        record_data(req, serverResData)
+                        console.log('指定的api命中！！！ 返回mock数据')
+                        mockResData = gen_mock(mockResData, mock_fields, increase_fields, reduce_fields)
+                        callback(JSON.stringify(mockResData))
+                    }catch(e) {
+                        console.log('mock出现错误，返回原始数据')
+                        callback(serverResData)
+                    }
                 }else {
                     console.log('指定的api没有命中，返回原始数据')
                     callback(serverResData)

@@ -1,5 +1,5 @@
 {
-  "name": "fuzzy-server",
+  "name": "mockserver",
   "version": "1.0.0",
   "description": "mock server with fuzzy value",
   "main": "index.js",
