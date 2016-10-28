@@ -15,7 +15,7 @@
     "mock"
   ],
   "bin": {
-    "fuzzyserver": "./index.js"
+    "mockserver": "./index.js"
   },
   "author": "fenfenzhong",
   "license": "ISC",
