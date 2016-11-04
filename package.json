@@ -1,6 +1,6 @@
 {
   "name": "anymocker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "mock server with fuzzy value based on anyproxy",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "mock"
   ],
   "bin": {
-    "anymocker": "./index.js"
+    "anymocker": "index.js"
   },
   "author": "fenfenzhong",
   "license": "ISC",
