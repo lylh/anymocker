@@ -15,7 +15,7 @@
     "mock"
   ],
   "bin": {
-    "anymocker": "./index.js"
+    "anymocker": "index.js"
   },
   "author": "fenfenzhong",
   "license": "ISC",
