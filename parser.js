@@ -5,7 +5,7 @@ var ArgumentParser = require('argparse').ArgumentParser;
 var parser = new ArgumentParser({
     version: '0.0.1',
     addHelp: true,
-    description: 'fuzzy server usage'
+    description: 'anymocker usage'
 });
 
 parser.addArgument(
