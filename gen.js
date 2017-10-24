@@ -22,10 +22,10 @@ var gen_mock = function(mockResData, scale) {
     if (mock_value === 'FUZZ') {
       var nodes = jp.nodes(mockResData, key)
       for (var node of nodes) {
-        console.log('进行fuzzy模糊值替换');
+        console.log('start fuzzy...');
         mock_value = gen_fuzzy_value(node.value)
-        console.log('原始值为：' + node.value)
-        console.log('替换后的值为：' + mock_value)
+        console.log('origin value：' + node.value)
+        console.log('after fuzzy：' + mock_value)
         jp.value(mockResData, jp.stringify(node.path), mock_value)
       }
     } else {
